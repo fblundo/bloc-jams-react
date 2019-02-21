@@ -19,10 +19,52 @@
     });
 
     this.state = {
-      album: album
+      album: album,
+      //we'll want to display song data on the screen so
+      //we'll want to store it on the component's state.
+      currentSong: album.songs[0],
+      //want to display whether or not the song is playing.
+      isPlaying: false
     };
-
+    // we're not assigning audioElement to the component's state.
+    this.audioElement = document.createElement('audio');
+    //when playing an album, we expect playback to start on the first
+    //track, so let's set the src property of this.audioElement to
+    //the audio source of the first song on the album.
+    this.audioElement.src = album.songs[0].audioSrc;
    }
+
+   play() {
+     this.audioElement.play();
+     this.setState({ isPlaying: true });
+   }
+
+   pause() {
+     this.audioElement.pause();
+     this.setState({ isPlaying: false });
+   }
+
+   //The setSong() method should receive a song object
+   // as a parameter and update this.audioElement.src and this.state.currentSong.
+   setSong(song) {
+    this.audioElement.src = song.audioSrc;
+    this.setState({ currentSong: song });
+  }
+
+  handleSongClick(song) {
+     const isSameSong = this.state.currentSong === song;
+     //add an if statement that pauses the song if
+     //this.state.isPlaying and  isSameSong are both true.
+     if (this.state.isPlaying && isSameSong) {
+       this.pause();
+     } else {
+       //the audio file never won't, unless we call
+       // setSong() from handleSongClick()
+       if (!isSameSong) { this.setSong(song); }
+      this.play();
+     }
+   }
+
    render() {
      return (
        <section className="album">
@@ -44,8 +86,7 @@
           {
             this.state.album.songs.map( (song, index) =>
             // <tr> {index+1} {song.title} {song.duration} seconds</tr> (to be discussed)
-            <tr key={index+1}> {index+1} {song.title} {song.duration} seconds</tr>
-
+            <tr className="song" key={index+1} onClick={() => this.handleSongClick(song)}> {index+1} {song.title} {song.duration} seconds</tr>
             )
           }
           </tbody>
