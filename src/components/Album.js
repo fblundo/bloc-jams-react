@@ -43,7 +43,9 @@
           <tbody>
           {
             this.state.album.songs.map( (song, index) =>
-              <tr>{index+1} {song.title} {song.duration} seconds</tr>
+            // <tr> {index+1} {song.title} {song.duration} seconds</tr> (to be discussed)
+            <tr key={index+1}> {index+1} {song.title} {song.duration} seconds</tr>
+
             )
           }
           </tbody>

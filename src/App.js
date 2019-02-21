@@ -18,9 +18,9 @@ class App extends Component {
            <h1>Bloc Jams</h1>
          </header>
          <main>
-          <Route exact path="/" component={Landing} />  //creating a route for each page with corresponding path; we specify "exact path" because we only want the Landing component to render when the path is /,
-          <Route path="/library" component={Library} /> //creating a route for each page with corresponding path
-          <Route path="/album/:slug" component={Album} /> //specifying a dynamic parameter
+          <Route exact path="/" component={Landing} /> {/* //creating a route for each page with corresponding path; we specify "exact path" because we only want the Landing component to render when the path is /,*/}
+          <Route path="/library" component={Library} /> {/*//creating a route for each page with corresponding path*/}
+          <Route path="/album/:slug" component={Album} /> {/*//specifying a dynamic parameter*/}
            </main>
       </div>
 
