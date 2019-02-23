@@ -1,5 +1,6 @@
  import React, { Component } from 'react';
  import albumData from './../data/albums';
+ import PlayerBar from './PlayerBar';
 
 
  class Album extends Component {
@@ -67,6 +68,23 @@
      }
    }
 
+   handlePrevClick() {
+     const currentIndex = this.state.album.songs.findIndex(song => this.state.currentSong === song);
+     const newIndex = Math.max(0, currentIndex - 1);
+     const newSong = this.state.album.songs[newIndex];
+     this.setSong(newSong);
+     this.play();
+  }
+
+  handleNextClick() {
+    const currentIndex = this.state.album.songs.findIndex(song => this.state.currentSong === song);
+    const newIndex = Math.min(this.state.album.songs.length, currentIndex + 1);
+    const newSong = this.state.album.songs[newIndex];
+    this.setSong(newSong);
+    this.play();
+ }
+
+
    handleSongHover(song){
      this.setState({ songHover: song });
    }
@@ -106,13 +124,11 @@
                  onMouseEnter={() => this.handleSongEnter(song)}
                  onMouseLeave={() => this.handleSongLeave(song)}>
               <td>
-
-              {!this.state.isPlaying && !this.state.mouseOverStatus ? index+1 : ''  }
-              {this.state.songHover == song && this.state.mouseOverStatus ? <ion-icon name='play'></ion-icon> : '' }
-              {this.state.songHover != song && !this.state.isPlaying && this.state.mouseOverStatus ? index+1 : ''  }
-              {this.state.songHover != song && this.state.isPlaying ? index+1 : ''  }
-              {this.state.songHover == song && this.state.isPlaying ? <ion-icon name='pause'></ion-icon> : '' }
-
+                {!this.state.isPlaying && !this.state.mouseOverStatus ? index+1 : ''  }
+                {this.state.songHover == song && this.state.mouseOverStatus ? <ion-icon name='play'></ion-icon> : '' }
+                {this.state.songHover != song && !this.state.isPlaying && this.state.mouseOverStatus ? index+1 : ''  }
+                {this.state.songHover != song && this.state.isPlaying ? index+1 : ''  }
+                {this.state.songHover == song && this.state.isPlaying ? <ion-icon name='pause'></ion-icon> : '' }
               </td>
               <td> {song.title} </td>
               <td> {song.duration} seconds </td>
@@ -122,6 +138,13 @@
           }
           </tbody>
         </table>
+         <PlayerBar
+         isPlaying={this.state.isPlaying}
+         currentSong={this.state.currentSong}
+         handleSongClick={() => this.handleSongClick(this.state.currentSong)}
+         handlePrevClick={() => this.handlePrevClick()}
+         handleNextClick={() => this.handleNextClick()}
+         />
        </section>
      );
    }
