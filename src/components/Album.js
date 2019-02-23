@@ -24,7 +24,9 @@
       //we'll want to store it on the component's state.
       currentSong: album.songs[0],
       //want to display whether or not the song is playing.
-      isPlaying: false
+      isPlaying: false,
+      songHover: album.songs[0],
+      mouseOverStatus: false
     };
     // we're not assigning audioElement to the component's state.
     this.audioElement = document.createElement('audio');
@@ -57,12 +59,24 @@
      //this.state.isPlaying and  isSameSong are both true.
      if (this.state.isPlaying && isSameSong) {
        this.pause();
-     } else {
+       } else {
        //the audio file never won't, unless we call
        // setSong() from handleSongClick()
        if (!isSameSong) { this.setSong(song); }
       this.play();
      }
+   }
+
+   handleSongHover(song){
+     this.setState({ songHover: song });
+   }
+
+   handleSongEnter(song) {
+     this.setState({mouseOverStatus: true})
+   }
+
+   handleSongLeave(song) {
+     this.setState({mouseOverStatus: false})
    }
 
    render() {
@@ -84,9 +98,26 @@
           </colgroup>
           <tbody>
           {
-            this.state.album.songs.map( (song, index) =>
-            // <tr> {index+1} {song.title} {song.duration} seconds</tr> (to be discussed)
-            <tr className="song" key={index+1} onClick={() => this.handleSongClick(song)}> {index+1} {song.title} {song.duration} seconds</tr>
+            this.state.album.songs.map( (song, index) => // song is the item in the array, but no need to define it as a variable
+            // <tr> {index+1} {song.title} {song.duration} seconds</tr> (to be discussed importance of keys in react)
+            <tr className="song" key={index+1}
+                 onClick={() => this.handleSongClick(song)}
+                 onMouseOver={() => this.handleSongHover(song)}
+                 onMouseEnter={() => this.handleSongEnter(song)}
+                 onMouseLeave={() => this.handleSongLeave(song)}>
+              <td>
+
+              {!this.state.isPlaying && !this.state.mouseOverStatus ? index+1 : ''  }
+              {this.state.songHover == song && this.state.mouseOverStatus ? <ion-icon name='play'></ion-icon> : '' }
+              {this.state.songHover != song && !this.state.isPlaying && this.state.mouseOverStatus ? index+1 : ''  }
+              {this.state.songHover != song && this.state.isPlaying ? index+1 : ''  }
+              {this.state.songHover == song && this.state.isPlaying ? <ion-icon name='pause'></ion-icon> : '' }
+
+              </td>
+              <td> {song.title} </td>
+              <td> {song.duration} seconds </td>
+
+            </tr>
             )
           }
           </tbody>
