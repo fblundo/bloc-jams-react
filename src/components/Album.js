@@ -1,4 +1,4 @@
- import React, { Component } from 'react';
+import React, { Component } from 'react';
  import albumData from './../data/albums';
  import PlayerBar from './PlayerBar';
 
@@ -26,6 +26,7 @@
       currentSong: album.songs[0],
       //want to display whether or not the song is playing.
       isPlaying: false,
+      isPaused: false,
       songHover: album.songs[0],
       mouseOverStatus: false
     };
@@ -45,6 +46,7 @@
    pause() {
      this.audioElement.pause();
      this.setState({ isPlaying: false });
+     this.setState({ isPaused: true });
    }
 
    //The setSong() method should receive a song object
@@ -97,6 +99,18 @@
      this.setState({mouseOverStatus: false})
    }
 
+   manageIcon(song, index) {
+     if (this.state.isPlaying && this.state.currentSong === song) {
+        return (<ion-icon name='pause'></ion-icon>)
+        }
+     else if (this.state.songHover == song && this.state.mouseOverStatus) {
+       return (<ion-icon name='play'></ion-icon>)
+     } else if (this.state.isPaused && this.state.currentSong === song)
+     {return (<ion-icon name='play'></ion-icon>) }
+     else { return index+1
+     }
+   }
+
    render() {
      return (
        <section className="album">
@@ -123,12 +137,12 @@
                  onMouseOver={() => this.handleSongHover(song)}
                  onMouseEnter={() => this.handleSongEnter(song)}
                  onMouseLeave={() => this.handleSongLeave(song)}>
-              <td>
-                {!this.state.isPlaying && !this.state.mouseOverStatus ? index+1 : ''  }
-                {this.state.songHover == song && this.state.mouseOverStatus ? <ion-icon name='play'></ion-icon> : '' }
-                {this.state.songHover != song && !this.state.isPlaying && this.state.mouseOverStatus ? index+1 : ''  }
-                {this.state.songHover != song && this.state.isPlaying ? index+1 : ''  }
-                {this.state.songHover == song && this.state.isPlaying ? <ion-icon name='pause'></ion-icon> : '' }
+
+              <td onClick={() => this.manageIcon(song)}>
+
+              {this.manageIcon(song, index)}
+
+
               </td>
               <td> {song.title} </td>
               <td> {song.duration} seconds </td>
@@ -151,3 +165,8 @@
  }
 
 export default Album;
+
+
+//When I hover over a song, it displays a "play" button in place of the song number.
+//The currently playing song displays a "pause" button in place of the song number.
+//A paused song displays a "play" button in place of the song number.
