@@ -27,7 +27,10 @@ import React, { Component } from 'react';
       //want to display whether or not the song is playing.
       isPlaying: false,
       isPaused: false,
+      volume: 0.80,
       songHover: album.songs[0],
+      currentTime: 0,
+      duration: album.songs[0].duration,
       mouseOverStatus: false
     };
     // we're not assigning audioElement to the component's state.
@@ -48,6 +51,32 @@ import React, { Component } from 'react';
      this.setState({ isPlaying: false });
      this.setState({ isPaused: true });
    }
+
+   componentDidMount() {
+     this.eventListeners = {
+       timeupdate: e => {
+         //please confirm: we are accessing the currentTime pre-defined property, which tracks the real time value of the song as it plays in this point of the code
+         this.setState({ currentTime: this.audioElement.currentTime });
+       },
+       durationchange: e => {
+         this.setState({ duration: this.audioElement.duration });
+       },
+       volumechange: e => {
+         this.setState({ volume: this.audioElement.volume });
+       }
+     };
+     this.audioElement.addEventListener('timeupdate', this.eventListeners.timeupdate);
+     this.audioElement.addEventListener('durationchange', this.eventListeners.durationchange);
+     this.audioElement.addEventListener('volumechange', this.eventListeners.volumechange);
+   }
+
+   componentWillUnmount() {
+     this.audioElement.src = null;
+     this.audioElement.removeEventListener('timeupdate', this.eventListeners.timeupdate);
+     this.audioElement.removeEventListener('durationchange', this.eventListeners.durationchange);
+     this.audioElement.removeEventListener('volumechange', this.eventListeners.volumechange);
+   }
+
 
    //The setSong() method should receive a song object
    // as a parameter and update this.audioElement.src and this.state.currentSong.
@@ -86,6 +115,43 @@ import React, { Component } from 'react';
     this.play();
  }
 
+ handleTimeChange(e) {
+    const newTime = this.audioElement.duration * e.target.value;
+    this.audioElement.currentTime = newTime;
+    this.setState({ currentTime: newTime });
+  }
+
+  handleVolumeChange(e) {
+    const newVolume = e.target.value;
+    this.audioElement.volume = newVolume;
+    this.setState({ volume: newVolume });
+
+  }
+
+  handleVolumeIncrease() {
+    var currentVolume = this.state.volume;
+    if (currentVolume >= 0.99) {
+        var increasedVolume = 1 }
+        else
+        {
+        increasedVolume =  Math.max(0, currentVolume + 0.01).toFixed(2);
+    }
+    this.audioElement.volume = increasedVolume;
+    this.setState({ volume: increasedVolume });
+    }
+
+    handleVolumeDecrease() {
+      var currentVolume = this.state.volume;
+      if (currentVolume <= 0.1) {
+          var decreasedVolume = 0 }
+          else
+          {
+          decreasedVolume =  Math.max(0, currentVolume - 0.01).toFixed(2);
+      }
+      this.audioElement.volume = decreasedVolume;
+      this.setState({ volume: decreasedVolume });
+      }
+
 
    handleSongHover(song){
      this.setState({ songHover: song });
@@ -110,6 +176,18 @@ import React, { Component } from 'react';
      else { return index+1
      }
    }
+
+   formatTime(duration) {
+    var d = Number(duration);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + (h == 1 ? " " : ":") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? ":" : ":") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? "" : " ") : "";
+    return hDisplay + mDisplay + sDisplay;
+    }
 
    render() {
      return (
@@ -137,15 +215,11 @@ import React, { Component } from 'react';
                  onMouseOver={() => this.handleSongHover(song)}
                  onMouseEnter={() => this.handleSongEnter(song)}
                  onMouseLeave={() => this.handleSongLeave(song)}>
-
-              <td onClick={() => this.manageIcon(song)}>
-
-              {this.manageIcon(song, index)}
-
-
-              </td>
-              <td> {song.title} </td>
-              <td> {song.duration} seconds </td>
+            <td onClick={() => this.manageIcon(song)}>
+            {this.manageIcon(song, index)}
+            </td>
+            <td> {song.title} </td>
+            <td> {this.formatTime(song.duration)} </td>
 
             </tr>
             )
@@ -153,11 +227,22 @@ import React, { Component } from 'react';
           </tbody>
         </table>
          <PlayerBar
+         //The play data is contained in Album state, but we'll need to access it in PlayerBar, so pass down isPlaying and currentSong to PlayerBar as props.
          isPlaying={this.state.isPlaying}
          currentSong={this.state.currentSong}
+         //passing time and duration as props to player bar
+         currentTime={this.audioElement.currentTime}
+         duration={this.audioElement.duration}
+         formatTime={this.formatTime}
+         //passing the volume data as props to player bar
+         volume={this.state.volume}
          handleSongClick={() => this.handleSongClick(this.state.currentSong)}
          handlePrevClick={() => this.handlePrevClick()}
          handleNextClick={() => this.handleNextClick()}
+         handleTimeChange={(e) => this.handleTimeChange(e)}
+         handleVolumeChange={(e) => this.handleVolumeChange(e)}
+         increaseVolume={() => this.handleVolumeIncrease()}
+         decreaseVolume={() => this.handleVolumeDecrease()}
          />
        </section>
      );
