@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
- import albumData from './../data/albums';
- import PlayerBar from './PlayerBar';
+import albumData from './../data/albums';
+import PlayerBar from './PlayerBar';
 
 
  class Album extends Component {
@@ -152,7 +152,6 @@ import React, { Component } from 'react';
       this.setState({ volume: decreasedVolume });
       }
 
-
    handleSongHover(song){
      this.setState({ songHover: song });
    }
@@ -191,60 +190,70 @@ import React, { Component } from 'react';
 
    render() {
      return (
-       <section className="album">
-       <section id="album-info">
-       <img id="album-cover-art" src={this.state.album.albumCover} alt={this.state.album.title}/>
-        <div className="album-details">
-           <h1 id="album-title">{this.state.album.title}</h1>
-           <h2 className="artist">{this.state.album.artist}</h2>
-        <div id="release-info">{this.state.album.releaseInfo}</div>
-       </div>
-     </section>
-     <table id="song-list">
-          <colgroup>
-            <col id="song-number-column" />
-            <col id="song-title-column" />
-            <col id="song-duration-column" />
-          </colgroup>
-          <tbody>
-          {
-            this.state.album.songs.map( (song, index) => // song is the item in the array, but no need to define it as a variable
-            // <tr> {index+1} {song.title} {song.duration} seconds</tr> (to be discussed importance of keys in react)
-            <tr className="song" key={index+1}
-                 onClick={() => this.handleSongClick(song)}
-                 onMouseOver={() => this.handleSongHover(song)}
-                 onMouseEnter={() => this.handleSongEnter(song)}
-                 onMouseLeave={() => this.handleSongLeave(song)}>
-            <td onClick={() => this.manageIcon(song)}>
-            {this.manageIcon(song, index)}
-            </td>
-            <td> {song.title} </td>
-            <td> {this.formatTime(song.duration)} </td>
 
-            </tr>
-            )
-          }
-          </tbody>
-        </table>
-         <PlayerBar
-         //The play data is contained in Album state, but we'll need to access it in PlayerBar, so pass down isPlaying and currentSong to PlayerBar as props.
-         isPlaying={this.state.isPlaying}
-         currentSong={this.state.currentSong}
-         //passing time and duration as props to player bar
-         currentTime={this.audioElement.currentTime}
-         duration={this.audioElement.duration}
-         formatTime={this.formatTime}
-         //passing the volume data as props to player bar
-         volume={this.state.volume}
-         handleSongClick={() => this.handleSongClick(this.state.currentSong)}
-         handlePrevClick={() => this.handlePrevClick()}
-         handleNextClick={() => this.handleNextClick()}
-         handleTimeChange={(e) => this.handleTimeChange(e)}
-         handleVolumeChange={(e) => this.handleVolumeChange(e)}
-         increaseVolume={() => this.handleVolumeIncrease()}
-         decreaseVolume={() => this.handleVolumeDecrease()}
-         />
-       </section>
+       <section className="album" className="container">
+        <div className="row">
+          <div class="col-4">
+            <section id="album-info">
+              <img id="album-cover-art" src={this.state.album.albumCover} alt={this.state.album.title}/>
+              <div className="album-details">
+                <h1 id="album-title">{this.state.album.title}</h1>
+                <h2 className="artist">{this.state.album.artist}</h2>
+               <div id="release-info">{this.state.album.releaseInfo}</div>
+              </div>
+           </section>
+         </div>
+
+         <div class="col-2">
+            <table id="song-list">
+              <colgroup>
+                <col id="song-number-column" />
+                <col id="song-title-column" />
+                <col id="song-duration-column" />
+              </colgroup>
+           <tbody>
+           {
+           this.state.album.songs.map( (song, index) => // song is the item in the array, but no need to define it as a variable
+              // <tr> {index+1} {song.title} {song.duration} seconds</tr> (to be discussed importance of keys in react)
+              <tr className="song" key={index+1}
+                   onClick={() => this.handleSongClick(song)}
+                   onMouseOver={() => this.handleSongHover(song)}
+                   onMouseEnter={() => this.handleSongEnter(song)}
+                   onMouseLeave={() => this.handleSongLeave(song)}>
+              <td onClick={() => this.manageIcon(song)}>
+              {this.manageIcon(song, index)}
+              </td>
+              <td> {song.title} </td>
+              <td> {this.formatTime(song.duration)} </td>
+              </tr>
+              )
+            }
+            </tbody>
+          </table>
+          </div>
+          <div class="col-6">
+           <PlayerBar
+           //The play data is contained in Album state, but we'll need to access it in PlayerBar, so pass down isPlaying and currentSong to PlayerBar as props.
+           isPlaying={this.state.isPlaying}
+           currentSong={this.state.currentSong}
+           //passing time and duration as props to player bar
+           currentTime={this.audioElement.currentTime}
+           duration={this.audioElement.duration}
+           formatTime={this.formatTime}
+           //passing the volume data as props to player bar
+           volume={this.state.volume}
+           handleSongClick={() => this.handleSongClick(this.state.currentSong)}
+           handlePrevClick={() => this.handlePrevClick()}
+           handleNextClick={() => this.handleNextClick()}
+           handleTimeChange={(e) => this.handleTimeChange(e)}
+           handleVolumeChange={(e) => this.handleVolumeChange(e)}
+           increaseVolume={() => this.handleVolumeIncrease()}
+           decreaseVolume={() => this.handleVolumeDecrease()}
+           />
+             </div>
+           </div>
+         </section>
+
      );
    }
  }

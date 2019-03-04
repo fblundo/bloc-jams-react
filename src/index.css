@@ -12,3 +12,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.h1 {
+    font-size: 1rem;
+}
+
+#album-cover-art {
+  height: 150px;
+}
+
+#album-title {
+
+  font-size: 1.5rem;
+
+}
+
+.artist {
+  font-size: 1rem;
+  font-style: italic;
+}
