@@ -186,7 +186,7 @@ import PlayerBar from './PlayerBar';
     var mDisplay = m > 0 ? ((m <= 9 ? "0" : ":") + m + (m >= 0 ? ":" : ":")) : "00:";
     var sDisplay = s > 0 ? (s <= 9 ? "0" : "") + s : "00";
     return hDisplay + mDisplay + sDisplay;
-    }
+    } 
 
    render() {
      return (
