@@ -182,9 +182,9 @@ import PlayerBar from './PlayerBar';
     var m = Math.floor(d % 3600 / 60);
     var s = Math.floor(d % 3600 % 60);
 
-    var hDisplay = h > 0 ? h + (h == 1 ? " " : ":") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? ":" : ":") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? "" : " ") : "";
+    var hDisplay = h > 0 ? (h == 1 ? " " : ":") + h : "";
+    var mDisplay = m > 0 ? ((m <= 9 ? "0" : ":") + m + (m >= 0 ? ":" : ":")) : "00:";
+    var sDisplay = s > 0 ? (s <= 9 ? "0" : "") + s : "00";
     return hDisplay + mDisplay + sDisplay;
     }
 
@@ -193,7 +193,7 @@ import PlayerBar from './PlayerBar';
 
        <section className="album" className="container">
         <div className="row">
-          <div class="col-4">
+          <div className="col-4">
             <section id="album-info">
               <img id="album-cover-art" src={this.state.album.albumCover} alt={this.state.album.title}/>
               <div className="album-details">
@@ -204,7 +204,7 @@ import PlayerBar from './PlayerBar';
            </section>
          </div>
 
-         <div class="col-2">
+         <div className="col-2">
             <table id="song-list">
               <colgroup>
                 <col id="song-number-column" />
@@ -231,7 +231,7 @@ import PlayerBar from './PlayerBar';
             </tbody>
           </table>
           </div>
-          <div class="col-6">
+          <div className="col-6">
            <PlayerBar
            //The play data is contained in Album state, but we'll need to access it in PlayerBar, so pass down isPlaying and currentSong to PlayerBar as props.
            isPlaying={this.state.isPlaying}
